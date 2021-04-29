@@ -792,5 +792,48 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                     throw new ArgumentException("unexpected PaneVisibilityState");
             }
         }
+
+        /// <summary>
+        /// Selects an item in the folder's view.
+        /// </summary>
+        /// <param name="index">The index of the item to select in the folder's view.</param>
+        public void SelectSingleItem(int index)
+        {
+            //if (index < 0 || GetItemsCount() <= index)
+            //    throw new IndexOutOfRangeException();
+
+            var ifv2 = GetFolderView2();
+            if (ifv2 != null)
+            {
+                try
+                {
+                    var hr = ifv2.SelectItem(index, (uint)(SVSIF.Select | SVSIF.DeselectOthers | SVSIF.EnsureVisible));
+                    if (hr != HResult.Ok) { throw new ShellException(hr); }
+                }
+                finally
+                {
+                    Marshal.ReleaseComObject(ifv2);
+                    ifv2 = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Selects an item by name in the folder's view.
+        /// </summary>
+        /// <param name="name">The name of the item to select in the folder's view.</param>
+        public void SelectSingleItem(string name)
+        {
+            var idx = 0;
+            foreach (ShellObject item in Items)
+            {
+                if (item.Name == name)
+                {
+                    SelectSingleItem(idx);
+                    return;
+                }
+                ++idx;
+            }
+        }
     }
 }

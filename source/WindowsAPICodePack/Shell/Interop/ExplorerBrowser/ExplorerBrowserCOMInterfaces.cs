@@ -119,6 +119,24 @@ namespace Microsoft.WindowsAPICodePack.Controls
         ViewOrderFlag = unchecked((int)0x80000000)
     }
 
+    [Flags]
+    internal enum SVSIF
+    {
+        Deselect = 0x00000000,
+        Select = 0x00000001,
+        Edit = 0x00000003,
+        DeselectOthers = 0x00000004,
+        EnsureVisible = 0x00000008,
+        Focused = 0x00000010,
+        TranslatePt = 0x00000020,
+        SelectionMark = 0x00000040,
+        PositionItem = 0x00000080,
+        Check = 0x00000100,
+        Check2 = 0x00000200,
+        KeyboardSelect = 0x00000401,
+        NoTakeFocus = 0x40000000
+    };
+
     [ComImport,
      Guid(ExplorerBrowserIIDGuid.ICommDlgBrowser3),
      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -254,7 +272,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
         /// <param name="dwFlag">One or more EXPLORER_BROWSER_OPTIONS flags to be set.</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void SetOptions([In]ExplorerBrowserOptions dwFlag);
+        void SetOptions([In] ExplorerBrowserOptions dwFlag);
 
         /// <summary>Gets the current browser options.</summary>
         /// <param name="pdwFlag">When this method returns, contains the current EXPLORER_BROWSER_OPTIONS for the browser.</param>
@@ -314,7 +332,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
 
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        HResult OnViewCreated([MarshalAs(UnmanagedType.IUnknown)]  object psv);
+        HResult OnViewCreated([MarshalAs(UnmanagedType.IUnknown)] object psv);
 
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -429,7 +447,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
         void GetAutoArrange();
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void SelectItem(int iItem, uint dwFlags);
+        HResult SelectItem(int iItem, uint dwFlags);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void SelectAndPositionItems(uint cidl, IntPtr apidl, ref NativePoint apt, uint dwFlags);
@@ -635,7 +653,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
     internal class ExplorerBrowserClass : IExplorerBrowser
     {
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        public extern virtual void Initialize(IntPtr hwndParent, [In]ref NativeRect prc, [In] FolderSettings pfs);
+        public extern virtual void Initialize(IntPtr hwndParent, [In] ref NativeRect prc, [In] FolderSettings pfs);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         public extern virtual void Destroy();
@@ -662,7 +680,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
         public extern virtual HResult Unadvise(uint dwCookie);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        public extern virtual void SetOptions([In]ExplorerBrowserOptions dwFlag);
+        public extern virtual void SetOptions([In] ExplorerBrowserOptions dwFlag);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         public extern virtual void GetOptions(out ExplorerBrowserOptions pdwFlag);
